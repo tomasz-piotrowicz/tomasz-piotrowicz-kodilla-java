@@ -21,7 +21,6 @@ public class WorldTestSuite {
         Country unitedStates = new Country(new BigDecimal("327000000"), "United States");
         Country canada = new Country(new BigDecimal("36000000"), "Canada");
         Country mexico = new Country(new BigDecimal("122000000"), "Mexico");
-        //When
         Continent europe = new Continent();
         europe.add(poland);
         europe.add(germany);
@@ -38,9 +37,9 @@ public class WorldTestSuite {
         world.add(europe);
         world.add(asia);
         world.add(america);
-        world.getPeopleQuantity();
-        //Then
+        //When
         BigDecimal result = world.getPeopleQuantity();
+        //Then
         BigDecimal expectedPopulation = new BigDecimal("3495000000");
         assertEquals(expectedPopulation, result);
         assertTrue(europe.getListOfCountriesByContinent().contains(poland));
