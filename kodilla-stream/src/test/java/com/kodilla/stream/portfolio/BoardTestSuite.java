@@ -2,6 +2,8 @@ package com.kodilla.stream.portfolio;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,60 +123,19 @@ public class BoardTestSuite {
     public void testAddTaskListFindLongTasks() {
         //Given
         Board project = prepareTestData();
-
         //When
         List<TaskList> inProgressTasks = new ArrayList<>();
         inProgressTasks.add(new TaskList("In progress"));
-        long longTasks = project.getTaskLists().stream()
+        double result = project.getTaskLists().stream()
                 .filter(inProgressTasks::contains)
                 .flatMap(tl -> tl.getTasks().stream())
-                .map(t -> t.getCreated())
-                .filter(d -> d.compareTo(LocalDate.now().minusDays(10)) <= 0)
-                .count();
-
+                .map(t -> Duration.between(t.getCreated().atTime(0,0,0),
+                        LocalDate.now().atTime(0,0,0)).toDays())
+                .mapToInt(t -> t.intValue())
+                .average().orElse(0);
         //Then
-        Assert.assertEquals(2, longTasks);
+        Assert.assertEquals(10, result, 0.1);
+
     }
 
-   /* @Test
-    public void testAddTaskListAverageWorkingOnTask(){
-        //Given
-        Board project = prepareTestData();
-
-        //When
-        List<TaskList> inProgressTasks = new ArrayList<>();
-        inProgressTasks.add(new TaskList("In progress"));
-        long result = project.getTaskLists().stream()
-                .filter(inProgressTasks::contains)
-                .flatMap(t2 -> t2.getTasks().stream())
-                .count();
-
-        long result1 = project.getTaskLists().stream()
-                .filter(inProgressTasks::contains)
-                .flatMap(t2 -> t2.getTasks().stream())
-                .map(t -> t.getCreated())
-                .filter(d -> d.until()
-                .count();
-
-        //Then
-        Assert.assertEquals(3, result);
-    } */
-
-    @Test
-    public void testAddTaskListAverageWorkingOnTask() {
-        //Given
-        Board project = prepareTestData();
-        //When
-        List<TaskList> inProgressTasks = new ArrayList<>();
-        inProgressTasks.add(new TaskList("In progress"));
-        double avg = project.getTaskLists().stream()
-                .filter(inProgressTasks::contains)
-                .flatMap(tl -> tl.getTasks().stream())
-                .map(t -> LocalDate.now().toEpochDay() - t.getCreated().toEpochDay())
-                .mapToInt(lng -> lng.intValue())
-                .average()
-                .orElse(0.0);
-        System.out.println(avg);
-        Assert.assertEquals(10, avg, 0.1);
-    }
 }
