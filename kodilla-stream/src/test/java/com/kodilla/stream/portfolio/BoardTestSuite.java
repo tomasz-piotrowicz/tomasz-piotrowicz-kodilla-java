@@ -100,6 +100,26 @@ public class BoardTestSuite {
     }
 
     @Test
+    public void testAddTaskListFindOutdatedTasks() {
+        //Given
+        Board project = prepareTestData();
+
+        //When
+        List<TaskList> undoneTasks = new ArrayList<>();
+        undoneTasks.add(new TaskList("To do"));
+        undoneTasks.add(new TaskList("In progress"));
+        List<Task> tasks = project.getTaskLists().stream()
+                .filter(undoneTasks::contains)
+                .flatMap(tl -> tl.getTasks().stream())
+                .filter(t -> t.getDeadline().isBefore(LocalDate.now()))
+                .collect(toList());
+
+        //Then
+        Assert.assertEquals(1, tasks.size());
+        Assert.assertEquals("HQLs for analysis", tasks.get(0).getTitle());
+    }
+
+    @Test
     public void testAddTaskListFindLongTasks() {
         //Given
         Board project = prepareTestData();
@@ -124,18 +144,19 @@ public class BoardTestSuite {
         Board project = prepareTestData();
 
         //When
-        List<TaskList> undoneTasks = new ArrayList<>();
-        undoneTasks.add(new TaskList("To do"));
-        undoneTasks.add(new TaskList("In progress"));
-        List<Task> tasks = project.getTaskLists().stream()
-                .filter(undoneTasks::contains)
+        List<TaskList> inProgressTasks = new ArrayList<>();
+        inProgressTasks.add(new TaskList("In progress"));
+        double avg = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
                 .flatMap(tl -> tl.getTasks().stream())
-                .filter(t -> t.getDeadline().isBefore(LocalDate.now()))
-                .collect(toList());
+                .map(t -> Duration.between(t.getCreated().atTime(0,0,0),
+                        LocalDate.now().atTime(0,0,0)).toDays())
+                .mapToInt(t -> t.intValue())
+                .average().orElse(0);
 
         //Then
-        Assert.assertEquals(1, tasks.size());
-        Assert.assertEquals("HQLs for analysis", tasks.get(0).getTitle());
+        System.out.println(avg);
+        Assert.assertEquals(10, avg, 0.1);
     }
 
 }
