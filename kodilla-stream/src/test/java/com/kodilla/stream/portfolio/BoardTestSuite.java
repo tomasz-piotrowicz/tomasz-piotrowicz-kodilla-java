@@ -100,7 +100,26 @@ public class BoardTestSuite {
     }
 
     @Test
-    public void testAddTaskListFindOutdatedTasks() {
+    public void testAddTaskListFindLongTasks() {
+        //Given
+        Board project = prepareTestData();
+
+        //When
+        List<TaskList> inProgressTasks = new ArrayList<>();
+        inProgressTasks.add(new TaskList("In progress"));
+        long longTasks = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
+                .flatMap(tl -> tl.getTasks().stream())
+                .map(t -> t.getCreated())
+                .filter(d -> d.compareTo(LocalDate.now().minusDays(10)) <= 0)
+                .count();
+
+        //Then
+        Assert.assertEquals(2, longTasks);
+    }
+
+    @Test
+    public void testAddTaskListAverageWorkingOnTask() {
         //Given
         Board project = prepareTestData();
 
@@ -117,25 +136,6 @@ public class BoardTestSuite {
         //Then
         Assert.assertEquals(1, tasks.size());
         Assert.assertEquals("HQLs for analysis", tasks.get(0).getTitle());
-    }
-
-    @Test
-    public void testAddTaskListFindLongTasks() {
-        //Given
-        Board project = prepareTestData();
-        //When
-        List<TaskList> inProgressTasks = new ArrayList<>();
-        inProgressTasks.add(new TaskList("In progress"));
-        double result = project.getTaskLists().stream()
-                .filter(inProgressTasks::contains)
-                .flatMap(tl -> tl.getTasks().stream())
-                .map(t -> Duration.between(t.getCreated().atTime(0,0,0),
-                        LocalDate.now().atTime(0,0,0)).toDays())
-                .mapToInt(t -> t.intValue())
-                .average().orElse(0);
-        //Then
-        Assert.assertEquals(10, result, 0.1);
-
     }
 
 }
