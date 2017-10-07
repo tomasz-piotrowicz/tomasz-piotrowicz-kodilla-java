@@ -3,7 +3,7 @@ package com.kodilla.exception.challenge;
 public class FirstChallenge {
     public double divide(double a, double b) throws ArithmeticException {
         if(b == 0){
-            throw new ArithmeticException();
+            throw new ArithmeticException("Division by zero!");
         }
         return a / b;
     }
@@ -21,7 +21,7 @@ public class FirstChallenge {
             System.out.println(result);
 
         } catch (ArithmeticException a) {
-            System.out.println("Division by zero!");
+            System.out.println(a);
 
         } finally {
             System.out.println("If the division didn't work you entered a bad data..");
