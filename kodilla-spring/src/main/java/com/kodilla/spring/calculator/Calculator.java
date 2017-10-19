@@ -8,27 +8,27 @@ public class Calculator {
     @Autowired
     Display display;
 
-    public boolean add(double a, double b) {
+    public double add(double a, double b) {
         double result = a + b;
         display.displayValue(result);
-        return true;
+        return result;
     }
 
-    public boolean sub(double a, double b) {
+    public double sub(double a, double b) {
         double result = a - b;
         display.displayValue(result);
-        return true;
+        return result;
     }
 
-    public boolean mul(double a, double b) {
+    public double mul(double a, double b) {
         double result = a * b;
         display.displayValue(result);
-        return true;
+        return result;
     }
-    public boolean div(double a, double b) {
+    public double div(double a, double b) {
         double result = a / b;
         display.displayValue(result);
-        return true;
+        return result;
     }
 
 }
