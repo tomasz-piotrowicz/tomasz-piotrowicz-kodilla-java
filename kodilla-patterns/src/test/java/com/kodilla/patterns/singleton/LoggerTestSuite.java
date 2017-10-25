@@ -17,7 +17,7 @@ public class LoggerTestSuite {
         //When
         String logText = Logger.getInstance().getLastLog();
         //Then
-        Assert.assertEquals("log using class Logger", logText);
+        Assert.assertEquals("write log using class Logger", logText);
 
     }
 }
