@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class CompanyDaoTestSuite {
     @Autowired
     CompanyDao companyDao;
+    @Autowired
+    EmployeeDao employeeDao;
 
-    @Test
+    /*@Test
     public void testSaveManyToMany(){
         //Given
         Employee johnSmith = new Employee("John", "Smith");
@@ -52,12 +56,46 @@ public class CompanyDaoTestSuite {
         Assert.assertNotEquals(0, greyMatterId);
 
         //CleanUp
-                /*try {
-            //    companyDao.delete(softwareMachineId);
-            //    companyDao.delete(dataMaestersId);
-            //    companyDao.delete(greyMatterId);
-            //} catch (Exception e) {
-            //    //do nothing
-            //}*/
-        }
+                try {
+                 companyDao.delete(softwareMachineId);
+                 companyDao.delete(dataMaestersId);
+                 companyDao.delete(greyMatterId);
+              } catch (Exception e) {
+                 do nothing
+            //}
+        }*/
+
+    @Test
+    public void testRetrieveEmployeesWithDefinedLastname() {
+        //Given
+        Employee mikePatton = new Employee("Mike", "Patton");
+        Employee chuckNorris = new Employee("Chuck", "Norris");
+        employeeDao.save(mikePatton);
+        employeeDao.save(chuckNorris);
+        //When
+        List<Employee> resultOfRetrieve = employeeDao.retrieveEmployeesWithDefinedLastname("Norris");
+        //Then
+        Assert.assertEquals(1, resultOfRetrieve.size());
+        //CleanUp
+        employeeDao.delete(mikePatton);
+        employeeDao.delete(chuckNorris);
+    }
+
+    @Test
+    public void testRetrieveCompaniesWithDefinedFirstThreeLetters(){
+        //Given
+        Company microsoft = new Company("Microsoft");
+        Company apple = new Company("Apple");
+        companyDao.save(microsoft);
+        companyDao.save(apple);
+        //When
+        List<Company> resultOfRetrieve2 = companyDao.retrieveCompaniesWithDefinedFirstThreeLetters("mic%");
+        //Then
+        Assert.assertEquals(1, resultOfRetrieve2.size());
+        //CleanUp
+        companyDao.delete(microsoft);
+        companyDao.delete(apple);
+
+    }
+
 }
